@@ -25,12 +25,12 @@ public class LtiOptions
     public string SigningKey { get; set; } = "";
     
     /// <summary>
-    /// Endpoint that handles initation requests
+    /// Endpoint that handles initiation requests. Default: oidc
     /// </summary>
     public string InitiationEndpoint { get; set; } = "oidc";
     
     /// <summary>
-    /// Endpoint that handles sign in requests
+    /// Endpoint that handles sign in requests. Default: signin-oidc
     /// </summary>
     public string LoginEndpoint { get; set; } = "signin-oidc";
 

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LTI tool test page</title>
+</head>
+<body>
+    <pre id="content"></pre>
+</body>
+<script>
+    function parseJwt (token) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    }
+
+    if (!document.location.hash) {
+        document.getElementById('content').innerText = 'no jwt found';
+    } else {
+        let jwt;
+        try {
+            jwt = parseJwt(document.location.hash);
+        } catch {
+            document.getElementById('content').innerText = 'failed to parse jwt';
+        }
+
+        document.getElementById('content').innerText = 'jwt received:\n\n' + JSON.stringify(jwt, undefined, 2);
+    }
+</script>
+</html>
