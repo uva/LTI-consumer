@@ -57,3 +57,4 @@ app.UseLti(new LtiOptions
     }
 });
 ```
+See also the example project, which shows a working example that can be used with Canvas (once an LTI developer key has been registered with redirect URI `https://localhost:5000/signin-oidc` and the included JSON config).
