@@ -25,7 +25,7 @@ app.UseLti(new LtiOptions
 | SigningKey         | A key used for signing JWT tokens passed to the client | _required_    |
 | ClientId           | Client ID as registered in the LMS                     | _required_    |
 | AuthenticateUrl    | Authentication url of the LMS                          | _required_    |
-| JwksUrl            | Url for LMS siging keys                                | _required_    |
+| JwksUrl            | Url for LMS signing keys                               | _required_    |
 | InitiationEndpoint | Endpoint exposed for initiation flow                   | `oidc`        |
 | LoginEndpoint      | Endpoint exposed for login flow                        | `signin-oidc` |
 | RedirectUrl        | Override redirect url after login                      |               |
