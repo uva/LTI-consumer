@@ -6,6 +6,8 @@
 </head>
 <body>
     <pre id="content"></pre>
+
+    <button id="button">Do API call</button>
 </body>
 <script>
     function parseJwt (token) {
@@ -29,6 +31,15 @@
         }
 
         document.getElementById('content').innerText = 'jwt received:\n\n' + JSON.stringify(jwt, undefined, 2);
+        
+        document.getElementById('button').addEventListener('click', () => {
+           fetch("/Test", { headers: { Authorization: `Bearer ${document.location.hash.slice(1)}` } })
+               .then(f => f.json())
+               .then(f => {
+                   console.log(f);
+                   alert('data retrieved, see developer console');
+               });
+       });
     }
 </script>
 </html>
