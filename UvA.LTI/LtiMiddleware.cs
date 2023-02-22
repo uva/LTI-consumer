@@ -79,6 +79,7 @@ public class LtiMiddleware
             {
                 Email = id.FindFirstValue(ClaimTypes.Email),
                 NameIdentifier = id.FindFirstValue(ClaimTypes.NameIdentifier),
+                Name = id.FindFirstValue(ClaimTypes.Name),
                 Context = JsonSerializer.Deserialize<LtiContext>(id.FindFirstValue(LtiClaimTypes.Context), jsonOptions),
                 Roles = id.FindAll(LtiClaimTypes.Roles).Select(c => c.Value).ToArray(),
                 CustomClaims = id.FindFirstValue(LtiClaimTypes.Custom) == null ? null 

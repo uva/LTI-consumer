@@ -9,4 +9,5 @@ public class LtiPrincipal
     public LtiContext Context { get; set; }
     public string[] Roles { get; set; }
     public JsonElement? CustomClaims { get; set; }
+    public string? Name { get; set; }
 }
