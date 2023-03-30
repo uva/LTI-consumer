@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
@@ -24,16 +25,20 @@ public class LtiMiddleware
         _options = options;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, IServiceProvider provider)
     {
         if (context.Request.Path == $"/{_options.InitiationEndpoint}" && await HandleInitiation(context))
             return;
-        if (context.Request.Path == $"/{_options.LoginEndpoint}" && await HandleLogin(context))
-            return;
+        if (context.Request.Path == $"/{_options.LoginEndpoint}")
+        {
+            var claimsResolver = provider.GetService<ILtiClaimsResolver>();
+            if (await HandleLogin(context, claimsResolver))
+                return;
+        }
         await _next(context);
     }
 
-    private async Task<bool> HandleLogin(HttpContext context)
+    private async Task<bool> HandleLogin(HttpContext context, ILtiClaimsResolver? claimsResolver)
     {
         var handler = new JwtSecurityTokenHandler();
         var state = handler.ValidateToken(context.Request.Form["state"][0], new TokenValidationParameters
@@ -74,21 +79,26 @@ public class LtiMiddleware
         var claimCustom = id.FindFirstValue(LtiClaimTypes.Custom);
         var claimLis = id.FindFirstValue(LtiClaimTypes.Lis);
 
+        var ltiPrincipal = new LtiPrincipal
+        {
+            Email = id.FindFirstValue(ClaimTypes.Email),
+            NameIdentifier = id.FindFirstValue(ClaimTypes.NameIdentifier),
+            Name = id.FindFirstValue(ClaimTypes.Name),
+            Context = JsonSerializer.Deserialize<LtiContext>(claimContext, jsonOptions),
+            Roles = id.FindAll(LtiClaimTypes.Roles).Select(c => c.Value).ToArray(),
+            CustomClaims = claimCustom == null ? null : JsonDocument.Parse(claimCustom).RootElement,
+            Lis = claimLis == null ? null : JsonSerializer.Deserialize<LtiLis>(claimLis, jsonOptions)
+        };
+
+        var claims = claimsResolver == null ? _options.ClaimsMapping(ltiPrincipal) :
+                                              await claimsResolver.ResolveClaims(ltiPrincipal);
+
         var token = handler.CreateToken(new SecurityTokenDescriptor
         {
             Expires = DateTime.UtcNow.AddMinutes(_options.TokenLifetime),
             Issuer = "lti",
             SigningCredentials = new SigningCredentials(SigningKey, SecurityAlgorithms.HmacSha512Signature),
-            Claims = _options.ClaimsMapping(new LtiPrincipal
-            {
-                Email = id.FindFirstValue(ClaimTypes.Email),
-                NameIdentifier = id.FindFirstValue(ClaimTypes.NameIdentifier),
-                Name = id.FindFirstValue(ClaimTypes.Name),
-                Context = JsonSerializer.Deserialize<LtiContext>(claimContext, jsonOptions),
-                Roles = id.FindAll(LtiClaimTypes.Roles).Select(c => c.Value).ToArray(),
-                CustomClaims = claimCustom == null ? null : JsonDocument.Parse(claimCustom).RootElement,
-                Lis = claimLis == null ? null : JsonSerializer.Deserialize<LtiLis>(claimLis, jsonOptions)
-            })
+            Claims = claims
         });
 
         context.Response.Redirect($"{_options.RedirectUrl ?? target}/#{handler.WriteToken(token)}");
