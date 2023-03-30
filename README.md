@@ -11,7 +11,7 @@ Add the `UvA.LTI` NuGet package and set up the LTI middleware:
 ```csharp
 app.UseLti(new LtiOptions 
 {
-    SigningKey = "sufficient-long-key-for-signing-jwt-tokens",
+    SigningKey = "sufficiently-long-key-for-signing-jwt-tokens",
     ClientId = "LTI client ID",
     AuthenticateUrl = "https://example.lms/lti/authenticate",
     JwksUrl = "https://example.lms/lti/.well-known/jwks"
