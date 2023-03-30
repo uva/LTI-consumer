@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using UvA.LTI;
+using UvA.LTI.Example;
 
 var key = "blawlaekltjwelkrjtwlkejlekwjrklwejr32423";
 var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
@@ -17,6 +18,10 @@ builder.Services
         opt.TokenValidationParameters.ValidIssuer = "lti";
         opt.TokenValidationParameters.IssuerSigningKey = signingKey;
     });
+
+//The mapping of claims can be defined in the ClaimsMapping delegate in options or
+//by adding a ILtiClaimsResolver service to use DI when mapping the claims:
+//builder.Services.AddScoped<ILtiClaimsResolver, ClaimsResolver>();
 
 var app = builder.Build();
 
