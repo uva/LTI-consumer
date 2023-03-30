@@ -69,7 +69,11 @@ public class LtiMiddleware
         }
 
         var jsonOptions = new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
-        
+
+        var claimContext = id.FindFirstValue(LtiClaimTypes.Context);
+        var claimCustom = id.FindFirstValue(LtiClaimTypes.Custom);
+        var claimLis = id.FindFirstValue(LtiClaimTypes.Lis);
+
         var token = handler.CreateToken(new SecurityTokenDescriptor
         {
             Expires = DateTime.UtcNow.AddMinutes(_options.TokenLifetime),
@@ -80,10 +84,10 @@ public class LtiMiddleware
                 Email = id.FindFirstValue(ClaimTypes.Email),
                 NameIdentifier = id.FindFirstValue(ClaimTypes.NameIdentifier),
                 Name = id.FindFirstValue(ClaimTypes.Name),
-                Context = JsonSerializer.Deserialize<LtiContext>(id.FindFirstValue(LtiClaimTypes.Context), jsonOptions),
+                Context = JsonSerializer.Deserialize<LtiContext>(claimContext, jsonOptions),
                 Roles = id.FindAll(LtiClaimTypes.Roles).Select(c => c.Value).ToArray(),
-                CustomClaims = id.FindFirstValue(LtiClaimTypes.Custom) == null ? null 
-                    : JsonDocument.Parse(id.FindFirstValue(LtiClaimTypes.Custom)).RootElement
+                CustomClaims = claimCustom == null ? null : JsonDocument.Parse(claimCustom).RootElement,
+                Lis = claimLis == null ? null : JsonSerializer.Deserialize<LtiLis>(claimLis, jsonOptions)
             })
         });
 

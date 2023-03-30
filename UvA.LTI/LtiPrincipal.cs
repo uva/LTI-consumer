@@ -10,4 +10,5 @@ public class LtiPrincipal
     public string[] Roles { get; set; }
     public JsonElement? CustomClaims { get; set; }
     public string? Name { get; set; }
+    public LtiLis? Lis { get; set; }
 }
