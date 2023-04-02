@@ -57,4 +57,29 @@ app.UseLti(new LtiOptions
     }
 });
 ```
+Alternatively the claims mapping can be handled by a service implementing the ILtiClaimsResolver interface instead of setting the ClaimsMapping delegate on LtiOptions.
+```cs
+builder.Services.AddScoped<ILtiClaimsResolver, ClaimsResolver>();
+app.UseLti(new LtiOptions{...});
+```
+```cs
+public class ClaimsResolver : ILtiClaimsResolver
+{
+    public Task<Dictionary<string, object>> ResolveClaims(LtiPrincipal principal)
+    {
+        var claims = new Dictionary<string, object>
+        {
+            // get course id from either the context or a custom claim
+            ["courseId"] = int.TryParse(principal.Context.Id, out _) ? principal.Context.Id : principal.CustomClaims?.GetProperty("courseid").ToString(),
+            ["courseName"] = principal.Context.Title,
+            [ClaimTypes.Role] = principal.Roles.Any(e => e.Contains("http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"))
+            ? "Teacher" : "Student",
+            [ClaimTypes.Email] = principal.Email,
+            [ClaimTypes.NameIdentifier] = principal.NameIdentifier.Split("_").Last(),
+        };
+
+        return Task.FromResult(claims);
+    }
+}
+```
 See also the example project, which shows a working example that can be used with Canvas (once an LTI developer key has been registered with redirect URI `https://localhost:5000/signin-oidc` and the included JSON config).
