@@ -58,8 +58,9 @@ public class LtiMiddleware
         
         var id = handler.ValidateToken(context.Request.Form["id_token"][0], new TokenValidationParameters
         {
-            ValidateAudience = false,
+            ValidateAudience = true,
             ValidateIssuer = false,
+            ValidAudience = _options.ClientId,
             IssuerSigningKeys = keyset.Keys
         }, out _);
 
