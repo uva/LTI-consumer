@@ -1,6 +1,6 @@
 # LTI 1.3 consumer middleware
 
-This middleware providers a very basic LTI 1.3 consumer setup.
+This middleware provides a very basic LTI 1.3 consumer setup.
 It handles the initiation and sign-in flow and generates a JWT for use in a client application.
 After login, a redirect is done to `https://{redirect_url}/#{token}`. 
 
