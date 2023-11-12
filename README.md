@@ -20,17 +20,19 @@ app.UseLti(new LtiOptions
 
 ## Options
 
-| Property           | Description                                            | Default       |
-|--------------------|--------------------------------------------------------|---------------|
-| SigningKey         | A key used for signing JWT tokens passed to the client | _required_    |
-| ClientId           | Client ID as registered in the LMS                     | _required_    |
-| AuthenticateUrl    | Authentication url of the LMS                          | _required_    |
-| JwksUrl            | Url for LMS signing keys                               | _required_    |
-| InitiationEndpoint | Endpoint exposed for initiation flow                   | `oidc`        |
-| LoginEndpoint      | Endpoint exposed for login flow                        | `signin-oidc` |
-| RedirectUrl        | Override redirect url after login                      |               |
-| TokenLifetime      | Generated JWT lifetime, in minutes                     | 120           |
-| ClaimsMapping      | Mapping of LTI claims to JWT claims                    | Only email    |
+| Property           | Description                                                                                                                  | Default       |
+|--------------------|------------------------------------------------------------------------------------------------------------------------------|---------------|
+| SigningKey         | A key used for signing JWT tokens passed to the client                                                                       | _required_    |
+| ClientId           | Client ID as registered in the LMS                                                                                           | _required_    |
+| AuthenticateUrl    | Authentication url of the LMS                                                                                                | _required_    |
+| JwksUrl            | Url for LMS signing keys                                                                                                     | _required_    |
+| InitiationEndpoint | Endpoint exposed for initiation flow                                                                                         | `oidc`        |
+| LoginEndpoint      | Endpoint exposed for login flow                                                                                              | `signin-oidc` |
+| RedirectUrl        | Override redirect url after login                                                                                            |               |
+| TokenLifetime      | Generated JWT lifetime, in minutes                                                                                           | 120           |
+| ClaimsMapping      | Mapping of LTI claims to JWT claims                                                                                          | Only email    |
+| RedirectFunction   | Function that allows redirects to other tool versions to be set up <br/> based on parameters sent to the initiation endpoint | None          |
+ 
 
 ## Example
 

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace UvA.LTI;
 
@@ -52,4 +53,9 @@ public class LtiOptions
         {
             [ClaimTypes.Email] = p.Email
         };
+
+    /// <summary>
+    /// Set up a redirect for certain requests
+    /// </summary>
+    public Func<IFormCollection, string?> RedirectFunction { get; set; } = _ => null;
 }
