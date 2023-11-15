@@ -94,6 +94,11 @@ public class LtiMiddleware
         var claims = claimsResolver == null ? _options.ClaimsMapping(ltiPrincipal) :
                                               await claimsResolver.ResolveClaims(ltiPrincipal);
 
+        claims.TryGetValue("redirectUrl", out object? claimsRedirectUrl);
+        string? redirectUrl = claimsRedirectUrl as string;
+        if (string.IsNullOrWhiteSpace(redirectUrl))
+            redirectUrl = _options.RedirectUrl ?? target;
+
         var token = handler.CreateToken(new SecurityTokenDescriptor
         {
             Expires = DateTime.UtcNow.AddMinutes(_options.TokenLifetime),
@@ -102,7 +107,7 @@ public class LtiMiddleware
             Claims = claims
         });
 
-        context.Response.Redirect($"{_options.RedirectUrl ?? target}/#{handler.WriteToken(token)}");
+        context.Response.Redirect($"{redirectUrl}/#{handler.WriteToken(token)}");
         return true;
     }
 
