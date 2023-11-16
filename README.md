@@ -82,4 +82,9 @@ public class ClaimsResolver : ILtiClaimsResolver
     }
 }
 ```
+The redirect url can be overriden in the options or by registering a service implementing the ILtiRedirectUrlResolver.
+By using the redirect resolver it's possible to specify custom redirect url's for each user based on the supplied claims.
+```cs
+builder.Services.AddScoped<ILtiRedirectUrlResolver, RedirectUrlResolver>();
+```
 See also the example project, which shows a working example that can be used with Canvas (once an LTI developer key has been registered with redirect URI `https://localhost:5000/signin-oidc` and the included JSON config).
