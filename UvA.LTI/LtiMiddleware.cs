@@ -32,13 +32,14 @@ public class LtiMiddleware
         if (context.Request.Path == $"/{_options.LoginEndpoint}")
         {
             var claimsResolver = provider.GetService<ILtiClaimsResolver>();
-            if (await HandleLogin(context, claimsResolver))
+            var redirectUrlResolver = provider.GetService<ILtiRedirectUrlResolver>();
+            if (await HandleLogin(context, claimsResolver, redirectUrlResolver))
                 return;
         }
         await _next(context);
     }
 
-    private async Task<bool> HandleLogin(HttpContext context, ILtiClaimsResolver? claimsResolver)
+    private async Task<bool> HandleLogin(HttpContext context, ILtiClaimsResolver? claimsResolver, ILtiRedirectUrlResolver? redirectUrlResolver)
     {
         var handler = new JwtSecurityTokenHandler();
         var state = handler.ValidateToken(context.Request.Form["state"][0], new TokenValidationParameters
@@ -94,12 +95,7 @@ public class LtiMiddleware
         var claims = claimsResolver == null ? _options.ClaimsMapping(ltiPrincipal) :
                                               await claimsResolver.ResolveClaims(ltiPrincipal);
 
-        claims.TryGetValue("redirectUrl", out object? claimsRedirectUrl);
-        string? redirectUrl = claimsRedirectUrl as string;
-        if (string.IsNullOrWhiteSpace(redirectUrl))
-            redirectUrl = _options.RedirectUrl ?? target;
-
-        var token = handler.CreateToken(new SecurityTokenDescriptor
+        var securityToken = handler.CreateToken(new SecurityTokenDescriptor
         {
             Expires = DateTime.UtcNow.AddMinutes(_options.TokenLifetime),
             Issuer = "lti",
@@ -107,7 +103,19 @@ public class LtiMiddleware
             Claims = claims
         });
 
-        context.Response.Redirect($"{redirectUrl}/#{handler.WriteToken(token)}");
+        var token = handler.WriteToken(securityToken);
+
+        if (redirectUrlResolver != null)
+        {
+            var redirectUrl = await redirectUrlResolver.ResolveRedirectUrl(token, claims);
+            if (redirectUrl != null)
+            {
+                context.Response.Redirect(redirectUrl);
+                return true;
+            }
+        }
+        
+        context.Response.Redirect($"{_options.RedirectUrl ?? target}/#{token}");
         return true;
     }
 
