@@ -133,6 +133,14 @@ public class LtiMiddleware
             return false;
         }
 
+        var redirect = _options.RedirectFunction(context.Request.Form);
+        if (redirect != null)
+        {
+            await GenerateForm(redirect, context.Request.Form.ToDictionary(f => f.Key, f => f.Value.First() ?? ""))
+                .ExecuteAsync(context);
+            return true;
+        }
+
         var nonce = Guid.NewGuid().ToString();
         
         var handler = new JwtSecurityTokenHandler();
@@ -163,12 +171,17 @@ public class LtiMiddleware
             ["prompt"] = "none",
             ["lti_message_hint"] = context.Request.Form["lti_message_hint"]
         };
-        await Results.Content($@"<html>
+        await GenerateForm(_options.AuthenticateUrl, pars).ExecuteAsync(context);
+        return true;
+    }
+
+    static IResult GenerateForm(string targetUrl, IEnumerable<KeyValuePair<string, string>> pars)
+        => Results.Content($@"<html>
 <head>
     <title>Working...</title>
 </head>
 <body>
-    <form method='POST' name='hiddenform' action='{_options.AuthenticateUrl}'>
+    <form method='POST' name='hiddenform' action='{targetUrl}'>
         {string.Join('\n', pars.Select(p => $"<input type='hidden' name={p.Key} value='{p.Value}' />"))}
         <noscript><p>Script is disabled. Click Submit to continue.</p><input type='submit' value='Submit' /></noscript>
     </form>
@@ -176,9 +189,7 @@ public class LtiMiddleware
         window.setTimeout(function() {{ document.forms[0].submit(); }}, 0);
     </script>
 </body>
-</html>", "text/html").ExecuteAsync(context);
-        return true;
-    }
+</html>", "text/html");
 }
 
 public static class LtiMiddlewareExtensions
