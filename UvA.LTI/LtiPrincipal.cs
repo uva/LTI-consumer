@@ -11,4 +11,5 @@ public class LtiPrincipal
     public JsonElement? CustomClaims { get; set; }
     public string? Name { get; set; }
     public LtiLis? Lis { get; set; }
+    public string? Locale { get; set; }
 }

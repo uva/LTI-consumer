@@ -89,7 +89,8 @@ public class LtiMiddleware
             Context = JsonSerializer.Deserialize<LtiContext>(claimContext, jsonOptions),
             Roles = id.FindAll(LtiClaimTypes.Roles).Select(c => c.Value).ToArray(),
             CustomClaims = claimCustom == null ? null : JsonDocument.Parse(claimCustom).RootElement,
-            Lis = claimLis == null ? null : JsonSerializer.Deserialize<LtiLis>(claimLis, jsonOptions)
+            Lis = claimLis == null ? null : JsonSerializer.Deserialize<LtiLis>(claimLis, jsonOptions),
+            Locale = id.FindFirstValue("locale")
         };
 
         var claims = claimsResolver == null ? _options.ClaimsMapping(ltiPrincipal) :
