@@ -164,7 +164,7 @@ public class LtiMiddleware
             ["client_id"] = _options.ClientId,
             ["response_type"] = "id_token",
             ["response_mode"] = "form_post",
-            ["redirect_uri"] = $"{context.Request.Scheme}://{context.Request.Host}/{_options.LoginEndpoint}",
+            ["redirect_uri"] = $"{context.Request.Scheme}://{(_options.LoginHost is not null ? new HostString(_options.LoginHost) : context.Request.Host)}/{_options.LoginEndpoint}",
             ["login_hint"] = context.Request.Form["login_hint"],
             ["scope"] = "openid",
             ["state"] = state,

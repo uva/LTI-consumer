@@ -58,4 +58,10 @@ public class LtiOptions
     /// Set up a redirect for certain requests
     /// </summary>
     public Func<IFormCollection, string?> RedirectFunction { get; set; } = _ => null;
+
+    /// <summary>
+    /// Override hostname for the login endpoint. 
+    /// </summary>
+    public string? LoginHost { get; set; }
+    
 }
