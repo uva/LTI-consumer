@@ -5,12 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.2.4</Version>
+        <Version>0.2.5</Version>
         <Authors>UvA</Authors>
         <Description>LTI 1.3 consumer middleware</Description>
         <PackageProjectUrl>https://github.com/UvA/LTI-consumer</PackageProjectUrl>
         <RepositoryUrl>https://github.com/UvA/LTI-consumer</RepositoryUrl>
-        <PackageReleaseNotes>Add locale</PackageReleaseNotes>
+        <PackageReleaseNotes>made login URL configurable</PackageReleaseNotes>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
