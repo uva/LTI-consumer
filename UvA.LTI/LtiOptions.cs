@@ -60,8 +60,10 @@ public class LtiOptions
     public Func<IFormCollection, string?> RedirectFunction { get; set; } = _ => null;
 
     /// <summary>
-    /// Override hostname for the login endpoint. 
+    /// Override scheme and hostname for the login endpoint.
+    /// The value of this property and the <see cref="LoginEndpoint"/> combined will be used to redirect the user and should match the Redirect URI registered in Canvas.
     /// </summary>
-    public string? LoginHost { get; set; }
+    /// <example>https://example.com</example>
+    public string? LoginUrl { get; set; }
     
 }
