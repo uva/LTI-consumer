@@ -90,7 +90,8 @@ public class LtiMiddleware
             Roles = id.FindAll(LtiClaimTypes.Roles).Select(c => c.Value).ToArray(),
             CustomClaims = claimCustom == null ? null : JsonDocument.Parse(claimCustom).RootElement,
             Lis = claimLis == null ? null : JsonSerializer.Deserialize<LtiLis>(claimLis, jsonOptions),
-            Locale = id.FindFirstValue("locale")
+            Locale = id.FindFirstValue("locale"),
+            CanvasPlacement = id.FindFirstValue(LtiClaimTypes.CanvasPlacement)
         };
 
         var claims = claimsResolver == null ? _options.ClaimsMapping(ltiPrincipal) :

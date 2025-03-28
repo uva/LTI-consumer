@@ -12,4 +12,5 @@ public class LtiPrincipal
     public string? Name { get; set; }
     public LtiLis? Lis { get; set; }
     public string? Locale { get; set; }
+    public string? CanvasPlacement { get; set; }
 }
