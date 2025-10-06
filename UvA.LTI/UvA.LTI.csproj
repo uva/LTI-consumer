@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.2.6</Version>
+        <Version>0.2.7</Version>
         <Authors>UvA</Authors>
         <Description>LTI 1.3 consumer middleware</Description>
         <PackageProjectUrl>https://github.com/UvA/LTI-consumer</PackageProjectUrl>
