@@ -30,6 +30,7 @@ app.UseLti(new LtiOptions
 | LoginEndpoint      | Endpoint exposed for login flow                                                                                              | `signin-oidc` |
 | RedirectUrl        | Override redirect url after login                                                                                            |               |
 | TokenLifetime      | Generated JWT lifetime, in minutes                                                                                           | 120           |
+| UserAgent          | User agent for HTTP requests                                                                                                 | LTI-Client    |
 | ClaimsMapping      | Mapping of LTI claims to JWT claims                                                                                          | Only email    |
 | RedirectFunction   | Function that allows redirects to other tool versions to be set up <br/> based on parameters sent to the initiation endpoint | None          |
  

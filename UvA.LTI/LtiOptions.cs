@@ -46,6 +46,11 @@ public class LtiOptions
     public int TokenLifetime { get; set; } = 120;
 
     /// <summary>
+    /// User agent for HTTP requests
+    /// </summary>
+    public string UserAgent { get; set; } = "LTI-Client";
+
+    /// <summary>
     /// Mapping of LTI properties to claims
     /// </summary>
     public Func<LtiPrincipal, Dictionary<string, object>> ClaimsMapping { get; set; }
