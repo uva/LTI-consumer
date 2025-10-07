@@ -55,6 +55,7 @@ public class LtiMiddleware
             return false;
 
         var client = new HttpClient();
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(_options.UserAgent);
         var keyset = new JsonWebKeySet(await client.GetStringAsync(_options.JwksUrl));
         
         var id = handler.ValidateToken(context.Request.Form["id_token"][0], new TokenValidationParameters
