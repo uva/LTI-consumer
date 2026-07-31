@@ -92,7 +92,8 @@ public class LtiMiddleware
             CustomClaims = claimCustom == null ? null : JsonDocument.Parse(claimCustom).RootElement,
             Lis = claimLis == null ? null : JsonSerializer.Deserialize<LtiLis>(claimLis, jsonOptions),
             Locale = id.FindFirstValue("locale"),
-            CanvasPlacement = id.FindFirstValue(LtiClaimTypes.CanvasPlacement)
+            CanvasPlacement = id.FindFirstValue(LtiClaimTypes.CanvasPlacement),
+            Picture = id.FindFirstValue("picture"),
         };
 
         var claims = claimsResolver == null ? _options.ClaimsMapping(ltiPrincipal) :
