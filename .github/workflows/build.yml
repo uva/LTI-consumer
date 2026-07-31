@@ -1,0 +1,42 @@
+name: build and push to nuget
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v7
+        
+      - name: NuGet login (OIDC → temp API key)
+          uses: NuGet/login@v1
+          id: login
+          with:
+            user: ${{ secrets.NUGET_USER }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.0.*
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Push
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0'
+    
+      - run: dotnet nuget push "./UvA.LTI/bin/Release/*.nupkg" --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+
+    
